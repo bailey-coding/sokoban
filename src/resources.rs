@@ -1,6 +1,7 @@
 use ggez::event::KeyCode;
 use specs::World;
 
+use std::collections::VecDeque;
 use std::fmt::{self, Display};
 use std::time::Duration;
 
@@ -10,9 +11,10 @@ use crate::events::Event;
 // Resources
 #[derive(Default)]
 pub struct InputQueue {
-    pub keys_pressed: Vec<KeyCode>,
+    pub keys_pressed: VecDeque<KeyCode>,
 }
 
+#[derive(PartialEq)]
 pub enum GameplayState {
   Playing,
   Won

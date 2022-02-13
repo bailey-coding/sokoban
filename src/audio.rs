@@ -10,7 +10,7 @@ pub struct AudioStore {
 
 pub fn initialize_sounds(world: &mut World, context: &mut Context) {
     let mut audio_store = world.write_resource::<AudioStore>();
-    let sounds = ["correct", "incorrect", "wall"];
+    let sounds = ["correct", "incorrect", "wall", "win"];
 
     for sound in sounds.iter() {
         let sound_name = sound.to_string();
@@ -23,7 +23,7 @@ pub fn initialize_sounds(world: &mut World, context: &mut Context) {
 
 
 impl AudioStore {
-    pub fn play_sound(&mut self, context: &mut Context, sound: &String) {
+    pub fn play_sound(&mut self, context: &mut Context, sound: &str) {
         let _ = self
             .sounds
             .get_mut(sound)

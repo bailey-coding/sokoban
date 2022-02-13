@@ -9,6 +9,7 @@ use std::collections::HashMap;
 
 pub struct InputSystem {}
 
+
 // System implementation
 impl<'a> System<'a> for InputSystem {
     // Data
@@ -39,7 +40,7 @@ impl<'a> System<'a> for InputSystem {
 
         for (position, _player) in (&positions, &players).join() {
             // Get the first key pressed
-            if let Some(key) = input_queue.keys_pressed.pop() {
+            if let Some(key) = input_queue.keys_pressed.pop_front() {
                 // get all the movables and immovables
                 let mov: HashMap<(u8, u8), Index> = (&entities, &movables, &positions)
                     .join()
@@ -78,18 +79,16 @@ impl<'a> System<'a> for InputSystem {
                     // if it exists, we try to move it and continue
                     // if it doesn't exist, we continue and try to find an immovable instead
                     match mov.get(&pos) {
-                        Some(id) => to_move.push((key, id.clone())),
+                        Some(id) => to_move.push((key, *id)),
                         None => {
                             // find an immovable
                             // if it exists, we need to stop and not move anything
                             // if it doesn't exist, we stop because we found a gap
-                            match immov.get(&pos) {
-                                Some(_id) => {
-                                    to_move.clear();
-                                    events.events.push(Event::PlayerHitObstacle {})
-                                }
-                                None => break,
+                            if let Some(_id) = immov.get(&pos) {
+                                to_move.clear();
+                                events.events.push(Event::PlayerHitObstacle {})
                             }
+                            break;
                         }
                     }
                 }
@@ -97,7 +96,7 @@ impl<'a> System<'a> for InputSystem {
         }
 
         // We've just moved, so let's increase the number of moves
-        if to_move.len() > 0 {
+        if !to_move.is_empty() {
             gameplay.moves_count += 1;
         }
 
@@ -106,10 +105,10 @@ impl<'a> System<'a> for InputSystem {
             let position = positions.get_mut(entities.entity(id));
             if let Some(position) = position {
                 match key {
-                    KeyCode::Up => position.y -= 1,
-                    KeyCode::Down => position.y += 1,
-                    KeyCode::Left => position.x -= 1,
-                    KeyCode::Right => position.x += 1,
+                    KeyCode::W | KeyCode::Up => position.y -= 1,
+                    KeyCode::S | KeyCode::Down => position.y += 1,
+                    KeyCode::A | KeyCode::Left => position.x -= 1,
+                    KeyCode::D | KeyCode::Right => position.x += 1,
                     _ => (),
                 }
             }

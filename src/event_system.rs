@@ -31,6 +31,11 @@ impl<'a> System<'a> for EventSystem<'a> {
         for event in event_queue.events.drain(..) {
             println!("New event: {:?}", event);
             match event {
+                Event::Won => {
+                    // play sound here
+                    audio_store.play_sound(self.context, &"win".to_string());
+                    // ...
+                }
                 Event::PlayerHitObstacle => {
                     // play sound here
                     audio_store.play_sound(self.context, &"wall".to_string());

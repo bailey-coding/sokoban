@@ -4,10 +4,10 @@
 use ggez::{
     conf,
     event::{self, KeyCode, KeyMods},
-    timer, Context, GameResult,
+    timer, Context, GameResult, graphics::Image,
 };
 use specs::{RunNow, World, WorldExt};
-use std::path;
+use std::{path, collections::HashMap};
 
 mod audio;
 mod components;
@@ -28,6 +28,7 @@ use crate::systems::*;
 
 struct Game {
     world: World,
+    image_cache: HashMap<String, Image>,
 }
 
 impl event::EventHandler<ggez::GameError> for Game {
@@ -62,7 +63,7 @@ impl event::EventHandler<ggez::GameError> for Game {
     fn draw(&mut self, context: &mut Context) -> GameResult {
         // Render game entities
         {
-            let mut rs = RenderingSystem { context };
+            let mut rs = RenderingSystem { context, image_cache: &mut self.image_cache };
             rs.run_now(&self.world);
         }
 
@@ -79,13 +80,14 @@ impl event::EventHandler<ggez::GameError> for Game {
         println!("Key pressed: {:?}", keycode);
 
         let mut input_queue = self.world.write_resource::<InputQueue>();
-        input_queue.keys_pressed.push(keycode);
+        input_queue.keys_pressed.push_back(keycode);
     }
 }
 
 // Initialize the level
 pub fn initialize_level(world: &mut World) {
-    const MAP: &str = "
+    const LEVELS: [&str; 2] = [
+        "
   N N W W W W W W
   W W W . . . . W
   W . . . BB . . W
@@ -95,7 +97,20 @@ pub fn initialize_level(world: &mut World) {
   W . . BS . . . W
   W . . . . . . W
   W W W W W W W W
-  ";
+  ",
+        "
+  N N W W W W W N
+  W W W . . . W N
+  W BS P BB . . W N
+  W W W . BB BS W N
+  W BS W W BB . W N
+  W . W . BS . W W
+  W BB . BBBS BB BB BS W
+  W . . . BS . . W
+  W W W W W W W W
+  ",
+    ];
+    const MAP: &str = LEVELS[1];
 
     load_map(world, MAP.to_string());
 }
@@ -116,7 +131,7 @@ pub fn main() -> GameResult {
     initialize_sounds(&mut world, &mut context);
 
     // Create the game state
-    let game = Game { world };
+    let game = Game { world, image_cache: HashMap::new() };
     // Run the main event loop
     event::run(context, event_loop, game)
 }

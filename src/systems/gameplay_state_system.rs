@@ -4,7 +4,7 @@ use std::collections::HashMap;
 
 use crate::{
     components::{Box, BoxSpot, Position},
-    resources::{Gameplay, GameplayState},
+    resources::{Gameplay, GameplayState, EventQueue}, events::Event,
 };
 
 pub struct GameplayStateSystem {}
@@ -12,6 +12,7 @@ pub struct GameplayStateSystem {}
 impl<'a> System<'a> for GameplayStateSystem {
     // Data
     type SystemData = (
+        Write<'a, EventQueue>,
         Write<'a, Gameplay>,
         ReadStorage<'a, Position>,
         ReadStorage<'a, Box>,
@@ -19,7 +20,7 @@ impl<'a> System<'a> for GameplayStateSystem {
     );
 
     fn run(&mut self, data: Self::SystemData) {
-      let (mut gameplay_state, positions, boxes, box_spots) = data;
+      let (mut events, mut gameplay_state, positions, boxes, box_spots) = data;
 
       // get all boxes indexed by position
       let boxes_by_position: HashMap<(u8, u8), &Box> = (&positions, &boxes)
@@ -47,6 +48,9 @@ impl<'a> System<'a> for GameplayStateSystem {
 
       // If we made it this far, then all box spots have boxes on them, and the
       // game has been won
-      gameplay_state.state = GameplayState::Won;
+      if gameplay_state.state != GameplayState::Won {
+        gameplay_state.state = GameplayState::Won;
+        events.events.push(Event::Won{})
+      }
   }
 }

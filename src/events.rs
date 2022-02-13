@@ -8,6 +8,9 @@ pub enum Event {
 
     // Fired when the box is placed on a spot
     BoxPlacedOnSpot(BoxPlacedOnSpot),
+
+    // When the player wins
+    Won,
 }
 
 pub type EntityId = u32;

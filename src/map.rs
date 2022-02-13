@@ -29,21 +29,30 @@ pub fn load_map(world: &mut World, map_string: String) {
                     create_player(world, position);
                 }
                 "BB" => {
-                  create_floor(world, position);
-                  create_box(world, position, BoxColour::Blue);
-              }
-              "RB" => {
-                  create_floor(world, position);
-                  create_box(world, position, BoxColour::Red);
-              }
-              "BS" => {
-                  create_floor(world, position);
-                  create_box_spot(world, position, BoxColour::Blue);
-              }
-              "RS" => {
-                  create_floor(world, position);
-                  create_box_spot(world, position, BoxColour::Red);
-              }
+                    create_floor(world, position);
+                    create_box(world, position, BoxColour::Blue);
+                }
+                "RB" => {
+                    create_floor(world, position);
+                    create_box(world, position, BoxColour::Red);
+                }
+                "BS" => {
+                    create_floor(world, position);
+                    create_box_spot(world, position, BoxColour::Blue);
+                }
+                "RS" => {
+                    create_floor(world, position);
+                    create_box_spot(world, position, BoxColour::Red);
+                }
+                "BBBS" => {
+                    create_floor(world, position);
+                    create_box_spot(world, position, BoxColour::Blue);
+                    create_box(world, position, BoxColour::Blue);
+                }
+                "RRRS" => {
+                    create_floor(world, position);
+                    create_box_spot(world, position, BoxColour::Red);
+                }
                 "N" => (),
                 c => panic!("unrecognized map item {}", c),
             }
