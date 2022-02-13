@@ -1,0 +1,28 @@
+[package]
+name = "rust-sokoban"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+ggez = "0.7.0"
+glam = { version = "0.20.2", features = ["mint"] }
+itertools = "0.10.3"
+specs = { version = "0.17.0", features = ["specs-derive"] }
+
+[profile.dev]
+opt-level = 1
+
+# The `ggez` package will use the -Copt-level=1 flag.
+[profile.dev.package.ggez]
+opt-level = 1
+
+
+# Set the default for dependencies.
+[profile.dev.package."*"]
+opt-level = 2
+
+# Set the settings for build scripts and proc-macros.
+[profile.dev.build-override]
+opt-level = 3
