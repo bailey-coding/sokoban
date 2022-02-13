@@ -4,10 +4,11 @@
 use ggez::{
     conf,
     event::{self, KeyCode, KeyMods},
-    timer, Context, GameResult, graphics::Image,
+    graphics::Image,
+    timer, Context, GameResult,
 };
 use specs::{RunNow, World, WorldExt};
-use std::{path, collections::HashMap};
+use std::{collections::HashMap, path};
 
 mod audio;
 mod components;
@@ -63,7 +64,10 @@ impl event::EventHandler<ggez::GameError> for Game {
     fn draw(&mut self, context: &mut Context) -> GameResult {
         // Render game entities
         {
-            let mut rs = RenderingSystem { context, image_cache: &mut self.image_cache };
+            let mut rs = RenderingSystem {
+                context,
+                image_cache: &mut self.image_cache,
+            };
             rs.run_now(&self.world);
         }
 
@@ -86,29 +90,68 @@ impl event::EventHandler<ggez::GameError> for Game {
 
 // Initialize the level
 pub fn initialize_level(world: &mut World) {
-    const LEVELS: [&str; 2] = [
+    const LEVELS: [&str; 6] = [
+        // Tutorial default level
         "
-  N N W W W W W W
-  W W W . . . . W
-  W . . . BB . . W
-  W . . RB . . . W
-  W . P . . . . W
-  W . . . . RS . W
-  W . . BS . . . W
-  W . . . . . . W
-  W W W W W W W W
-  ",
+        N N W W W W W W
+        W W W . . . . W
+        W . . . BB . . W
+        W . . RB . . . W
+        W . P . . . . W
+        W . . . . RS . W
+        W . . BS . . . W
+        W . . . . . . W
+        W W W W W W W W
+        ",
+        // Easy level III: Unsolved
         "
-  N N W W W W W N
-  W W W . . . W N
-  W BS P BB . . W N
-  W W W . BB BS W N
-  W BS W W BB . W N
-  W . W . BS . W W
-  W BB . BBBS BB BB BS W
-  W . . . BS . . W
-  W W W W W W W W
-  ",
+        W W W W W N
+        W BS . . W W
+        W P BB BB . W
+        W W . . . W
+        N W W . . W
+        N N W W BS W
+        N N N W W W
+        ",
+        // Easy level II
+        "
+        W W W W N N
+        W . . W W W
+        W . RB RB . W
+        W RS RS RS . W
+        W . P RB . W
+        W . . . W W
+        W W W W W N
+        ",
+        // Hard level II: Unsolved
+        "
+        W W W W N N N
+        W . . W W W W
+        W . RS . RS . W
+        W . RB RB W P W
+        W W . . . . W
+        N W W W W W W
+        ",
+        // Easy level
+        "
+        N W W W N
+        N W BS W W
+        W W BB P W
+        W BS BB . W
+        W W W W W
+        ",
+        // Difficult level
+        "
+        N N W W W W W N
+        W W W . . . W N
+        W BS P BB . . W N
+        W W W . BB BS W N
+        W BS W W BB . W N
+        W . W . BS . W W
+        W BB . BBBS BB BB BS W
+        W . . . BS . . W
+        W W W W W W W W
+        ",
     ];
     const MAP: &str = LEVELS[1];
 
@@ -131,7 +174,10 @@ pub fn main() -> GameResult {
     initialize_sounds(&mut world, &mut context);
 
     // Create the game state
-    let game = Game { world, image_cache: HashMap::new() };
+    let game = Game {
+        world,
+        image_cache: HashMap::new(),
+    };
     // Run the main event loop
     event::run(context, event_loop, game)
 }
