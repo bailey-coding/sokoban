@@ -1,6 +1,6 @@
-use crate::components::*;
+use crate::components::{Position, Renderable, RenderableKind};
 use crate::constants::TILE_WIDTH;
-use crate::resources::*;
+use crate::resources::{Gameplay, Time};
 
 use ggez::{
     graphics::{self, spritebatch::SpriteBatch, Color, DrawParam, Image},
@@ -34,7 +34,7 @@ impl RenderingSystem<'_> {
         .expect("expected drawing queued text");
     }
 
-    pub fn get_image(&mut self, renderable: &Renderable, delta: Duration) -> String {
+    pub fn get_image(renderable: &Renderable, delta: Duration) -> String {
         let path_index = match renderable.kind() {
             RenderableKind::Static => {
                 // We only have one image, so we just return that
@@ -84,12 +84,12 @@ impl<'a> System<'a> for RenderingSystem<'a> {
 
         // Iterate through all pairs of positions & renderables, load the image
         // and draw it at the specified position.
-        for (position, renderable) in rendering_data.iter() {
+        for (position, renderable) in &rendering_data {
             // Load the image
-            let image_path = self.get_image(renderable, time.delta);
+            let image_path = RenderingSystem::get_image(renderable, time.delta);
 
-            let x = position.x as f32 * TILE_WIDTH;
-            let y = position.y as f32 * TILE_WIDTH;
+            let x = f32::from(position.x) * TILE_WIDTH;
+            let y = f32::from(position.y) * TILE_WIDTH;
             let z = position.z;
 
             // draw

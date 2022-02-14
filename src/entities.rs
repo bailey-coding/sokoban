@@ -1,4 +1,4 @@
-use crate::components::*;
+use crate::components::{Box, BoxColour, BoxSpot, Immovable, Movable, Player, Position, Renderable, Wall};
 use specs::{Builder, World, WorldExt};
 
 // Create a wall entity

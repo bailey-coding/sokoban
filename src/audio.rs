@@ -12,19 +12,18 @@ pub fn initialize_sounds(world: &mut World, context: &mut Context) {
     let mut audio_store = world.write_resource::<AudioStore>();
     let sounds = ["correct", "incorrect", "wall", "win"];
 
-    for sound in sounds.iter() {
-        let sound_name = sound.to_string();
-        let sound_path = format!("/sounds/{}.wav", sound_name);
+    for sound in &sounds {
+        let sound_path = format!("/sounds/{}.wav", sound);
         let sound_source = audio::Source::new(context, sound_path).expect("expected sound loaded");
 
-        audio_store.sounds.insert(sound_name, sound_source);
+        audio_store.sounds.insert((*sound).to_string(), sound_source);
     }
 }
 
 
 impl AudioStore {
     pub fn play_sound(&mut self, context: &mut Context, sound: &str) {
-        let _ = self
+        let _sound = self
             .sounds
             .get_mut(sound)
             .expect("expected sound")

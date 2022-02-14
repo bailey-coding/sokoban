@@ -20,12 +20,12 @@ mod map;
 mod resources;
 mod systems;
 
-use crate::audio::*;
-use crate::components::*;
-use crate::event_system::*;
-use crate::map::*;
-use crate::resources::*;
-use crate::systems::*;
+use crate::audio::initialize_sounds;
+use crate::components::register_components;
+use crate::event_system::EventSystem;
+use crate::map::load_map;
+use crate::resources::{InputQueue, Time, register_resources};
+use crate::systems::{GameplayStateSystem, InputSystem, RenderingSystem};
 
 struct Game {
     world: World,
@@ -155,7 +155,7 @@ pub fn initialize_level(world: &mut World) {
     ];
     const MAP: &str = LEVELS[1];
 
-    load_map(world, MAP.to_string());
+    load_map(world, MAP);
 }
 
 pub fn main() -> GameResult {

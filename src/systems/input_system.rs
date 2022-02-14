@@ -1,5 +1,5 @@
-use crate::components::*;
-use crate::constants::*;
+use crate::components::{Immovable, Movable, Player, Position};
+use crate::constants::{MAP_HEIGHT, MAP_WIDTH};
 use crate::events::{EntityMoved, Event};
 use crate::resources::{EventQueue, Gameplay, InputQueue};
 use ggez::event::KeyCode;
@@ -78,18 +78,14 @@ impl<'a> System<'a> for InputSystem {
                     // find a movable
                     // if it exists, we try to move it and continue
                     // if it doesn't exist, we continue and try to find an immovable instead
-                    match mov.get(&pos) {
-                        Some(id) => to_move.push((key, *id)),
-                        None => {
-                            // find an immovable
-                            // if it exists, we need to stop and not move anything
-                            // if it doesn't exist, we stop because we found a gap
-                            if let Some(_id) = immov.get(&pos) {
-                                to_move.clear();
-                                events.events.push(Event::PlayerHitObstacle {})
-                            }
-                            break;
+                    if let Some(id) = mov.get(&pos) {
+                        to_move.push((key, *id));
+                    } else {
+                        if let Some(_id) = immov.get(&pos) {
+                            to_move.clear();
+                            events.events.push(Event::PlayerHitObstacle {});
                         }
+                        break;
                     }
                 }
             }

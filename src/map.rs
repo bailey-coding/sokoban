@@ -1,10 +1,10 @@
 use crate::components::{BoxColour, Position};
-use crate::entities::*;
+use crate::entities::{create_box, create_box_spot, create_floor, create_player, create_wall};
 use specs::World;
 
-pub fn load_map(world: &mut World, map_string: String) {
+pub fn load_map(world: &mut World, map_string: &str) {
     // read all lines
-    let rows: Vec<&str> = map_string.trim().split('\n').map(|x| x.trim()).collect();
+    let rows: Vec<&str> = map_string.trim().split('\n').map(str::trim).collect();
 
     for (y, row) in rows.iter().enumerate() {
         let columns: Vec<&str> = row.split(' ').collect();
@@ -52,6 +52,7 @@ pub fn load_map(world: &mut World, map_string: String) {
                 "RRRS" => {
                     create_floor(world, position);
                     create_box_spot(world, position, BoxColour::Red);
+                    create_box(world, position, BoxColour::Red);
                 }
                 "N" => (),
                 c => panic!("unrecognized map item {}", c),

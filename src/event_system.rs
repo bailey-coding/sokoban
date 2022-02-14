@@ -1,6 +1,6 @@
 use crate::{
     audio::AudioStore,
-    components::*,
+    components::{Box, BoxSpot, Position},
     events::{BoxPlacedOnSpot, EntityMoved, Event},
     resources::EventQueue,
 };
@@ -72,7 +72,7 @@ impl<'a> System<'a> for EventSystem<'a> {
                         "incorrect"
                     };
 
-                    audio_store.play_sound(self.context, &sound.to_string())
+                    audio_store.play_sound(self.context, &sound.to_string());
                 }
             }
         }

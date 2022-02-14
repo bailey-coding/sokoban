@@ -50,7 +50,7 @@ impl<'a> System<'a> for GameplayStateSystem {
       // game has been won
       if gameplay_state.state != GameplayState::Won {
         gameplay_state.state = GameplayState::Won;
-        events.events.push(Event::Won{})
+        events.events.push(Event::Won{});
       }
   }
 }
