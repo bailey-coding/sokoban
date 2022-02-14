@@ -1,0 +1,17 @@
+name: Lint
+
+on: [push, pull_request]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@v1
+      - run: sudo apt-get install libudev-dev libasound2-dev
+      - run: rustup component add clippy
+      - name: Run clippy
+        run:  cargo clippy -- -A clippy::type-complexity
